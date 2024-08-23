@@ -1,0 +1,15 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<div>
+    {% if user.is_authenticated %}
+        <h1>Welcome to homepage</h1>
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <h1>Welcome to Elearn</h1>
+        <a href="{% url 'login' %}">Log In</a>
+        <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+</div>
+{% endblock %}
