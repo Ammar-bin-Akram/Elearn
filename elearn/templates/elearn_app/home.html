@@ -3,14 +3,10 @@
 
 {% block content %}
 <div>
-    {% for user in users %}
-        <h1>{{ user.username }}</h1>
-        <p>{{ user.profile }}</p>
-    {% endfor %}
-    {% for profile in profiles %}
-        <h1>{{ profile.user_type }}</h1>
-        <img src="{{ profile.user_image.url }}" alt="Profile Image">
-    {% endfor %}
+    <h1>{{ user.username }}</h1>
+    <p>{{ user.profile }}</p>
+    <h1>{{ profile.user_type }}</h1>
+    <img src="{{ profile.user_image.url }}" alt="Profile Image">
     <a href="{% url 'index' %}">Want to Logout</a>
 </div>
 {% endblock %}

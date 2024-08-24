@@ -46,7 +46,7 @@ def login(request):
             print(user)
             if user is not None:
                 auth_login(request, user)
-                return redirect('home')
+                return redirect('home', user_id=user.pk)
             else:
                 form.add_error('username', 'User does not exist!')
     else:
@@ -59,8 +59,9 @@ def logout(request):
     return redirect('index')
 
 @login_required
-def home(request):
-    users = User.objects.all()
-    profiles = Profile.objects.all()
-    context = {'users': users, 'profiles': profiles}
+def home(request, user_id):
+    print(user_id)
+    user = User.objects.get(pk=user_id)
+    profile = Profile.objects.get(user=user)
+    context = {'user': user, 'profile': profile}
     return render(request, 'elearn_app/home.html', context)
