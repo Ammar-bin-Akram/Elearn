@@ -34,7 +34,7 @@ def signup(request):
                     user = User.objects.create_user(first_name=firstName, last_name=lastName, username=userName, email=email, password=password)
                     profile = Profile(user_type=typeof_user, phone=phone, user_image=user_image, user=user)
                     profile.save()
-                    return redirect('index')
+                    return redirect('login')
             else:
                 if password != confirmPassword:
                     form.add_error('confirm_password', 'Passwords do not match!')
@@ -42,7 +42,7 @@ def signup(request):
                     user = User.objects.create_user(first_name=firstName, last_name=lastName, username=userName, email=email, password=password)
                     profile = Profile(user_type=typeof_user, phone=phone, user_image=user_image, user=user)
                     profile.save()
-                    return redirect('index')
+                    return redirect('login')
     else:
         form = SignUpForm()
     context = {'form': form}
@@ -58,7 +58,7 @@ def login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                return redirect('home', user_id=user.pk)
+                return redirect('index')
             else:
                 form.add_error('username', 'User does not exist!')
     else:
