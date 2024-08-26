@@ -93,8 +93,13 @@ def add_course(request, user_id):
                 description = form.cleaned_data['description']
                 image = form.cleaned_data.get('image')
                 created_at = timezone.now()
-                course = Course.objects.create(name=name, category=category, description=description, created_at=created_at, image=image, profile=profile)
-                course.save()
+                if image is None:
+                    image = 'course_pics/default.jpg'
+                    course = Course.objects.create(name=name, category=category, description=description, created_at=created_at, image=image, profile=profile)
+                    course.save()
+                else:
+                    course = Course.objects.create(name=name, category=category, description=description, created_at=created_at, image=image, profile=profile)
+                    course.save()
                 messages.success(request, 'Your course has been added!')
                 return redirect('home', user_id=user.pk)
         else:

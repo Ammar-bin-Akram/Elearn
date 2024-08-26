@@ -1,13 +1,22 @@
 {% extends '../base.html' %}
 {% load static %}
 
+{% block title %}
+Elearn - signup
+{% endblock %}
+
 {% block content %}
-<div>
-    <form method="post" action="#" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Sign Up</button>
-    </form>
-    <a href="{% url 'login' %}">Already have an Account!</a>
-</div>
+    <div class="container-fluid d-flex flex-column justify-content-top align-items-center mt-3">
+        <h1 class="main-h1 mb-2">Sign Up</h1>
+        <div class="main-login-form sign-form d-flex flex-row flex-wrap justify-content-center align-items-center p-5">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-flex flex-row justify-content-center">
+                <button type="submit" class="index-btn">Sign Up</button>
+                </div>
+            </form>
+        </div>
+        <a href="{% url 'login' %}">Already have an account?</a>
+    </div>
 {% endblock %}

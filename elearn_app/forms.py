@@ -27,5 +27,5 @@ class AddCourseForm(forms.Form):
     name = forms.CharField(max_length=100)
     category = forms.CharField(max_length=100)
     description = forms.CharField(widget=forms.Textarea)
-    image = forms.ImageField(required=True)
+    image = forms.ImageField(required=False)
 

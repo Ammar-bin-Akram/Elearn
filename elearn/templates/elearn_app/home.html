@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-    <div class="container-fluid pt-5 mt-5">
+    <div class="container-fluid pt-3">
         {% if profile.user_type == 'student' %}
             <div class="container d-flex flex-row justify-content-center">
                     <div class="input-group mb-3">
@@ -28,23 +28,23 @@
                     {% endif %}
             </div>
         {% else %}
-            {% if courses %}
-                {% for course in courses %}
-                    <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="{{ course.image.url }}" alt="Card image cap">
-                        <div class="card-body">
-                        <h5 class="card-title">{{ course.name }}</h5>
-                        <p class="card-text">{{ course.description  }}</p>
-                        <a href="#" class="btn btn-primary">View</a>
-                        <a href="#" class="btn btn-primary">Add Material</a>
+            <div class="d-flex flex-row justify-content-between flex-wrap container" id="courses-list-home">
+                {% if courses %}
+                    {% for course in courses %}
+                        <div class="card" style="width: 18rem;">
+                            <img class="card-img-top" src="{{ course.image.url }}" alt="Card image cap">
+                            <div class="card-body">
+                            <h5 class="card-title">{{ course.name }}</h5>
+                            <p class="card-text">{{ course.description  }}</p>
+                            <a href="#" class="btn btn-primary">View</a>
+                            <a href="#" class="btn btn-primary">Add Material</a>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div>You have not added courses yet.</div>
-            {% endif %}
-
-
+                    {% endfor %}
+                {% else %}
+                    <div>You have not added courses yet.</div>
+                {% endif %}
+            </div>
             <a href="{% url 'add' user.id %}">Add Course</a>
         {% endif %}
     </div>

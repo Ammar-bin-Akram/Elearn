@@ -1,13 +1,22 @@
 {% extends '../base.html' %}
 {% load static %}
 
+{% block title %}
+Elearn - Login
+{% endblock %}
+
 {% block content %}
-<div>
-    <form method="post" action="#">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Log In</button>
-    </form>
-    <a href="{% url 'signup' %}">Don't have an account!</a>
-</div>
+    <div class="container-fluid d-flex flex-column justify-content-top align-items-center mt-5">
+        <h1 class="main-h1 mb-5">Log In</h1>
+        <div class="main-login-form sign-form d-flex flex-row flex-wrap justify-content-center align-items-center p-5">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-flex flex-row justify-content-center">
+                <button type="submit" class="index-btn">Log In</button>
+                </div>
+            </form>
+        </div>
+        <a href="{% url 'signup' %}">Don't have an account?</a>
+    </div>
 {% endblock %}
