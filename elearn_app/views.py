@@ -23,13 +23,23 @@ def signup(request):
             phone = form.cleaned_data['phone']
             typeof_user = form.cleaned_data['role']
             user_image = form.cleaned_data.get('user_image')
-            if password != confirmPassword:
-                form.add_error('confirm_password', 'Passwords do not match!')
+            if user_image is None:
+                user_image = "profile_pics/default.png"
+                if password != confirmPassword:
+                    form.add_error('confirm_password', 'Passwords do not match!')
+                else:
+                    user = User.objects.create_user(first_name=firstName, last_name=lastName, username=userName, email=email, password=password)
+                    profile = Profile(user_type=typeof_user, phone=phone, user_image=user_image, user=user)
+                    profile.save()
+                    return redirect('index')
             else:
-                user = User.objects.create_user(first_name=firstName, last_name=lastName, username=userName, email=email, password=password)
-                profile = Profile(user_type=typeof_user, phone=phone, user_image=user_image, user=user)
-                profile.save()
-                return redirect('index')
+                if password != confirmPassword:
+                    form.add_error('confirm_password', 'Passwords do not match!')
+                else:
+                    user = User.objects.create_user(first_name=firstName, last_name=lastName, username=userName, email=email, password=password)
+                    profile = Profile(user_type=typeof_user, phone=phone, user_image=user_image, user=user)
+                    profile.save()
+                    return redirect('index')
     else:
         form = SignUpForm()
     context = {'form': form}
@@ -43,7 +53,6 @@ def login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(username=username, password=password)
-            print(user)
             if user is not None:
                 auth_login(request, user)
                 return redirect('home', user_id=user.pk)
@@ -60,7 +69,6 @@ def logout(request):
 
 @login_required
 def home(request, user_id):
-    print(user_id)
     user = User.objects.get(pk=user_id)
     profile = Profile.objects.get(user=user)
     context = {'user': user, 'profile': profile}
