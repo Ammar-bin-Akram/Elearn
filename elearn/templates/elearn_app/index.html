@@ -2,14 +2,21 @@
 {% load static %}
 
 {% block content %}
-<div>
+<div class="container-fluid index-background pt-5">
     {% if user.is_authenticated %}
-        <h1>Welcome to homepage</h1>
-        <a href="{% url 'logout' %}">Logout</a>
+        <div class="d-flex flex-column justify-content-top align-items-center">
+            <h1>Welcome to Elearn</h1>
+            <h2>Your only stop to enhance experience of online learning</h2>
+        </div>
     {% else %}
-        <h1>Welcome to Elearn</h1>
-        <a href="{% url 'login' %}">Log In</a>
-        <a href="{% url 'signup' %}">Sign Up</a>
+        <div class="d-flex flex-column justify-content-top align-items-center">
+            <h1>Welcome to Elearn</h1>
+            <h2>Your only stop to enhance experience of online learning</h2>
+        </div>
+        <div class="d-flex flex-row justify-content-center align-items-evenly">
+            <a href="{% url 'login' %}"><button class="index-btn">Log In</button></a>
+            <a href="{% url 'signup' %}"><button class="index-btn">Sign Up</button></a>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

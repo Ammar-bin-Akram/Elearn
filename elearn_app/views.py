@@ -75,8 +75,8 @@ def home(request, user_id):
     user = User.objects.get(pk=user_id)
     profile = Profile.objects.get(user=user)
     courses = Course.objects.filter(profile=profile)
-    print(courses)
-    context = {'user': user, 'profile': profile, 'courses': courses}
+    all_courses = Course.objects.all()
+    context = {'user': user, 'profile': profile, 'courses': courses, 'all_courses': all_courses}
     return render(request, 'elearn_app/home.html', context)
 
 def add_course(request, user_id):

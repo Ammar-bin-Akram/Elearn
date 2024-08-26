@@ -2,38 +2,48 @@
 {% load static %}
 
 {% block content %}
-{% if profile.user_type == 'student' %}
-   <div class="container d-flex flex-row justify-content-center">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Seacrh Courses" aria-label="Seacrh Courses" aria-describedby="button-addon2">
-            <button class="btn btn-outline-primary" type="button" id="button-addon2">Search</button>
-        </div>
-   </div>
-   <div class="d-flex flex-row justify-content-between flex-wrap container" id="courses-list-home">
-        {% if courses %}
-            <div>Some courses are present</div>
-        {% else %}
-            <div>There are no courses</div>
-        {% endif %}
-   </div>
-{% else %}
-    {% if courses %}
-        {% for course in courses %}
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="{{ course.image.url }}" alt="Card image cap">
-                <div class="card-body">
-                <h5 class="card-title">{{ course.name }}</h5>
-                <p class="card-text">{{ course.description  }}</p>
-                <a href="#" class="btn btn-primary">View</a>
-                <a href="#" class="btn btn-primary">Add Material</a>
+    {% if profile.user_type == 'student' %}
+        <div class="container d-flex flex-row justify-content-center">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Seacrh Courses" aria-label="Seacrh Courses" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-primary" type="button" id="button-addon2">Search</button>
                 </div>
-            </div>
-        {% endfor %}
+        </div>
+        <div class="d-flex flex-row justify-content-between flex-wrap container" id="courses-list-home">
+                {% if all_courses %}
+                    {% for course in all_courses %}
+                        <div class="card" style="width: 18rem;">
+                            <img class="card-img-top" src="{{ course.image.url }}" alt="Card image cap">
+                            <div class="card-body">
+                            <h5 class="card-title">{{ course.name }}</h5>
+                            <p class="card-text">{{ course.description  }}</p>
+                            <p class="card-text">Author: {{ course.profile.user.username }}</p>
+                            <a href="#" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div>There are no courses</div>
+                {% endif %}
+        </div>
     {% else %}
-        <div>You have not added courses yet.</div>
+        {% if courses %}
+            {% for course in courses %}
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{{ course.image.url }}" alt="Card image cap">
+                    <div class="card-body">
+                    <h5 class="card-title">{{ course.name }}</h5>
+                    <p class="card-text">{{ course.description  }}</p>
+                    <a href="#" class="btn btn-primary">View</a>
+                    <a href="#" class="btn btn-primary">Add Material</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div>You have not added courses yet.</div>
+        {% endif %}
+
+
+        <a href="{% url 'add' user.id %}">Add Course</a>
     {% endif %}
-
-
-    <a href="{% url 'add' user.id %}">Add Course</a>
-{% endif %}
 {% endblock %}
