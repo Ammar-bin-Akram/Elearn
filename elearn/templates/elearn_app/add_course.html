@@ -1,0 +1,18 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block title %}
+Elearn - Add Courses
+{% endblock %}
+
+
+{% block content %}
+<div>
+    <form action="{% url 'add' user.id %}" enctype="multipart/form-data" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add</button>
+    </form>
+</div>
+
+{% endblock %}

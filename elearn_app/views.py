@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .forms import SignUpForm, LoginForm
+from .forms import SignUpForm, LoginForm, AddCourseForm
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Course, CourseMaterial
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages 
+from datetime import datetime, timezone
+from django.utils import timezone
 
 # Create your views here.
 
@@ -71,5 +74,30 @@ def logout(request):
 def home(request, user_id):
     user = User.objects.get(pk=user_id)
     profile = Profile.objects.get(user=user)
-    context = {'user': user, 'profile': profile}
+    courses = Course.objects.filter(profile=profile)
+    print(courses)
+    context = {'user': user, 'profile': profile, 'courses': courses}
     return render(request, 'elearn_app/home.html', context)
+
+def add_course(request, user_id):
+    user = User.objects.get(pk=user_id)
+    profile = Profile.objects.get(user=user)
+    if profile.user_type == 'student':
+        return HttpResponse('You are a student, you can not add a course.')
+    else:
+        if request.method == 'POST':
+            form = AddCourseForm(request.POST, request.FILES)
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                category = form.cleaned_data['category']
+                description = form.cleaned_data['description']
+                image = form.cleaned_data.get('image')
+                created_at = timezone.now()
+                course = Course.objects.create(name=name, category=category, description=description, created_at=created_at, image=image, profile=profile)
+                course.save()
+                messages.success(request, 'Your course has been added!')
+                return redirect('home', user_id=user.pk)
+        else:
+            form = AddCourseForm()
+        context = {'form': form}
+        return render(request, 'elearn_app/add_course.html', context)

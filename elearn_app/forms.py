@@ -21,3 +21,11 @@ class SignUpForm(forms.Form):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100)
     password = forms.CharField(widget=forms.PasswordInput)
+
+
+class AddCourseForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    category = forms.CharField(max_length=100)
+    description = forms.CharField(widget=forms.Textarea)
+    image = forms.ImageField(required=True)
+
