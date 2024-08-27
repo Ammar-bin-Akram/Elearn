@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .forms import SignUpForm, LoginForm, AddCourseForm
 from django.contrib.auth.models import User
-from .models import Profile, Course, CourseMaterial
+from .models import Profile, Course
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
@@ -123,3 +123,9 @@ def delete_course(request, course_id, user_id):
     course.delete()
     messages.success(request, f'Course {course_name} has been deleted!')
     return redirect('home', user_id=user.pk)
+
+def add_course_material(request, user_id, course_id):
+    user = User.objects.get(pk=user_id)
+    profile = Profile.objects.get(user=user)
+    course = Course.objects.get(pk=course_id)
+    return HttpResponse(f'Add course material to {course.name} by {user.username}')

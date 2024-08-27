@@ -19,6 +19,8 @@ class Course(models.Model):
 
 
 class CourseMaterial(models.Model):
-    material = models.FileField(upload_to='course_materials', null=False)
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000)
+    file = models.FileField(upload_to='course_materials', null=False)
     uploaded_at = models.DateTimeField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE)

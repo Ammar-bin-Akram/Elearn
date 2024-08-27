@@ -6,13 +6,25 @@ Elearn - View Courses
 {% endblock %}
 
 {% block content %}
-    <div class="container d-flex flex-column justify-content-center align-items-center">
-        <h1>Course: {{ course.name }}</h1>
-        <h2>Category: {{ course.category }}</h2>
-        <h2>Description: {{ course.description }}</h2>
-        <img src="{{ course.image.url }}" class="img-fluid">
-    </div>
-    <div class="d-flex flex-row justify-content-center pt-3">
-        <a href="{% url 'delete' user.id course.id %}"><button class="index-btn">Delete Course</button></a>
-    </div>
+    {% if profile.user_type == 'teacher' %}
+        <div class="container d-flex flex-column justify-content-center align-items-center">
+            <h1>Course: {{ course.name }}</h1>
+            <h2>Category: {{ course.category }}</h2>
+            <h2>Description: {{ course.description }}</h2>
+            <img src="{{ course.image.url }}" class="img-fluid">
+        </div>
+        <div class="d-flex flex-row justify-content-center pt-3">
+            <a href="{% url 'delete' user.id course.id %}"><button class="index-btn">Delete Course</button></a>
+        </div>
+    {% else %}
+        <div class="container d-flex flex-column justify-content-center align-items-center">
+            <h1>Course: {{ course.name }}</h1>
+            <h2>Category: {{ course.category }}</h2>
+            <h2>Description: {{ course.description }}</h2>
+            <img src="{{ course.image.url }}" class="img-fluid">
+        </div>
+        <div class="d-flex flex-row justify-content-center pt-3">
+            <a href="#"><button class="index-btn">Enroll</button></a>
+        </div>
+    {% endif %}
 {% endblock %}

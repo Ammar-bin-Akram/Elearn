@@ -19,7 +19,7 @@
                                 <h5 class="card-title">{{ course.name }}</h5>
                                 <p class="card-text">{{ course.description  }}</p>
                                 <p class="card-text">Author: {{ course.profile.user.username }}</p>
-                                <a href="#" class="btn btn-primary">View</a>
+                                <a href="{% url 'view' user.id course.id %}" class="btn btn-primary">View</a>
                                 </div>
                             </div>
                         {% endfor %}
@@ -37,7 +37,7 @@
                             <h5 class="card-title">{{ course.name }}</h5>
                             <p class="card-text">{{ course.description  }}</p>
                             <a href="{% url 'view' user.id course.id %}" class="btn btn-primary">View</a>
-                            <a href="#" class="btn btn-primary">Add Material</a>
+                            <a href="{% url 'add_material' user.id course.id %}" class="btn btn-primary">Add Material</a>
                             </div>
                         </div>
                     {% endfor %}
