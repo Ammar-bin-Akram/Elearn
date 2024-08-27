@@ -5,6 +5,19 @@
 Elearn - Delete Courses
 {% endblock %}
 
+
 {% block content %}
-You can delete any course here.
+<div class="container-fluid d-flex flex-column justify-content-top align-items-center mt-3">
+    <h1 class="main-h1 mb-2">Add Course</h1>
+    <div class="main-login-form sign-form d-flex flex-row flex-wrap justify-content-center align-items-center p-5">
+        <form method="post" action="{% url 'delete' user.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex flex-row justify-content-center">
+            <button type="submit" class="index-btn">Delete Course</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {% endblock %}

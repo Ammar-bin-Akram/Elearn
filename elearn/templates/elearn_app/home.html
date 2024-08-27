@@ -36,7 +36,7 @@
                             <div class="card-body">
                             <h5 class="card-title">{{ course.name }}</h5>
                             <p class="card-text">{{ course.description  }}</p>
-                            <a href="#" class="btn btn-primary">View</a>
+                            <a href="{% url 'view' user.id course.id %}" class="btn btn-primary">View</a>
                             <a href="#" class="btn btn-primary">Add Material</a>
                             </div>
                         </div>
@@ -45,7 +45,9 @@
                     <div>You have not added courses yet.</div>
                 {% endif %}
             </div>
-            <a href="{% url 'add' user.id %}">Add Course</a>
+            <div class="d-flex flex-row justify-content-center">
+                <a href="{% url 'add' user.id %}"><button class="index-btn">Add Course</button></a>
+            </div>
         {% endif %}
     </div>
 {% endblock %}

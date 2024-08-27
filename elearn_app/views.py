@@ -106,3 +106,20 @@ def add_course(request, user_id):
             form = AddCourseForm()
         context = {'form': form}
         return render(request, 'elearn_app/add_course.html', context)
+    
+
+def view_course(request, user_id, course_id):
+    user = User.objects.get(pk=user_id)
+    profile = Profile.objects.get(user=user)
+    course = Course.objects.get(pk=course_id)
+    context = {'user': user, 'course': course, 'profile': profile}
+    return render(request, 'elearn_app/view_course.html', context)
+
+
+def delete_course(request, course_id, user_id):
+    course = Course.objects.get(pk=course_id)
+    user = User.objects.get(pk=user_id)
+    course_name = course.name
+    course.delete()
+    messages.success(request, f'Course {course_name} has been deleted!')
+    return redirect('home', user_id=user.pk)

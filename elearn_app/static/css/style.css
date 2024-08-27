@@ -34,8 +34,8 @@ nav{
 
 .alert{
     position: fixed;
-    top: 0px;
-    right: 0;
+    top: 10px;
+    right: 0px;
     max-width: 300px;
 }
 

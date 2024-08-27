@@ -5,8 +5,8 @@
 <div class="container-fluid index-background pt-5">
     {% if user.is_authenticated %}
         <div class="d-flex flex-column justify-content-top align-items-center">
-            <h1 class="text-light">Welcome to <span>Elearn</span></h1>
-            <h2>Your only stop to enhance experience of online learning</h2>
+            <h1 style="color: white;">Welcome to <span>Elearn</span></h1>
+            <h2 style="color: white;">Your only stop to enhance experience of online learning</h2>
             <div class="container d-flex flex-row justify-content-evenly mt-5">
                 <a href="{% url 'home' user.id %}"><button class="index-btn">View Courses</button></a>
                 <a href="#"><button class="index-btn">Profile</button></a>
@@ -15,8 +15,8 @@
     {% else %}
         <div class="d-flex flex-column justify-content-between">
             <div class="d-flex flex-column justify-content-center align-items-center mb-5">
-                <h1>Welcome to Elearn</h1>
-                <h2>Your only stop to enhance experience of online learning</h2>
+                <h1 style="color: white;">Welcome to Elearn</h1>
+                <h2 style="color: white;">Your only stop to enhance experience of online learning</h2>
             </div>
             <div class="d-flex flex-row justify-content-evenly mt-5">
                 <a href="{% url 'login' %}"><button class="index-btn">Log In</button></a>
