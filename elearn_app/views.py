@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
 from datetime import datetime, timezone
 from django.utils import timezone
+import string
+import random
 
 # Create your views here.
 
@@ -40,6 +42,7 @@ def signup(request):
                     form.add_error('confirm_password', 'Passwords do not match!')
                 else:
                     user = User.objects.create_user(first_name=firstName, last_name=lastName, username=userName, email=email, password=password)
+                    user_image.name = custom_filename(user_image.name)
                     profile = Profile(user_type=typeof_user, phone=phone, user_image=user_image, user=user)
                     profile.save()
                     return redirect('login')
@@ -66,6 +69,7 @@ def login(request):
     context = {"form": form}
     return render(request, 'authorization/login.html', context)
 
+@login_required
 def logout(request):
     auth_logout(request)
     return redirect('index')
@@ -79,6 +83,7 @@ def home(request, user_id):
     context = {'user': user, 'profile': profile, 'courses': courses, 'all_courses': all_courses}
     return render(request, 'elearn_app/home.html', context)
 
+@login_required
 def add_course(request, user_id):
     user = User.objects.get(pk=user_id)
     profile = Profile.objects.get(user=user)
@@ -98,6 +103,7 @@ def add_course(request, user_id):
                     course = Course.objects.create(name=name, category=category, description=description, created_at=created_at, image=image, profile=profile)
                     course.save()
                 else:
+                    image.name = custom_filename(image.name)
                     course = Course.objects.create(name=name, category=category, description=description, created_at=created_at, image=image, profile=profile)
                     course.save()
                 messages.success(request, 'Your course has been added!')
@@ -112,17 +118,19 @@ def view_course(request, user_id, course_id):
     user = User.objects.get(pk=user_id)
     profile = Profile.objects.get(user=user)
     course = Course.objects.get(pk=course_id)
-    context = {'user': user, 'course': course, 'profile': profile}
+    course_materials = CourseMaterial.objects.filter(course=course)
+    context = {'user': user, 'course': course, 'profile': profile, 'course_materials': course_materials}
     return render(request, 'elearn_app/view_course.html', context)
 
-
-def delete_course(request, course_id, user_id):
+@login_required
+def delete_course(request, user_id, course_id):
     course = Course.objects.get(pk=course_id)
     user = User.objects.get(pk=user_id)
     course_name = course.name
     course.delete()
     messages.success(request, f'Course {course_name} has been deleted!')
     return redirect('home', user_id=user.pk)
+
 
 def add_course_material(request, user_id, course_id):
     if request.method == "POST":
@@ -131,11 +139,13 @@ def add_course_material(request, user_id, course_id):
             name = form.cleaned_data['name']
             description = form.cleaned_data['description']
             file = form.cleaned_data.get('file')
-            uploaded_at = timezone.now()
+            file_name = file.name # type: ignore
             user = User.objects.get(pk=user_id)
             course = Course.objects.get(pk=course_id)
+            file.name = custom_filename(file.name) # type: ignore
+            uploaded_at = timezone.now()
             course_material = CourseMaterial.objects.create(name=name, description=description, file=file, uploaded_at=uploaded_at, course=course)
-            messages.success(request, f'Material {file} has been added to {course.name}')
+            messages.success(request, f'Material {file_name} has been added to {course.name}')
             return redirect('home', user_id=user.pk)
     else:
         user = User.objects.get(pk=user_id)
@@ -146,3 +156,12 @@ def add_course_material(request, user_id, course_id):
         return render(request, 'elearn_app/add_material.html', context)
     
 
+def home_guest(request):
+    return HttpResponse('You can view courses here!')
+    
+# function to give the user uploaded images and files a custom name as filename_randomStringSequence.extension
+def custom_filename(filename):
+    extension = filename.split('.')[-1]
+    string_sequence = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 15)) 
+    new_filename = f'{filename.split('.')[0]}_{string_sequence}.{extension}'
+    return new_filename

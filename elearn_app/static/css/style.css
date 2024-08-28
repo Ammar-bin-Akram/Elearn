@@ -42,3 +42,7 @@ nav{
 .main-login-form{
     border: 1px solid #5271ff;
 }
+
+.course-image-container{
+    width: 100px;
+}

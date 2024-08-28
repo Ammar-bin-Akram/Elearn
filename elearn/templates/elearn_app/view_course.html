@@ -7,14 +7,39 @@ Elearn - View Courses
 
 {% block content %}
     {% if profile.user_type == 'teacher' %}
-        <div class="container d-flex flex-column justify-content-center align-items-center">
-            <h1>Course: {{ course.name }}</h1>
-            <h2>Category: {{ course.category }}</h2>
-            <h2>Description: {{ course.description }}</h2>
-            <img src="{{ course.image.url }}" class="img-fluid">
-        </div>
-        <div class="d-flex flex-row justify-content-center pt-3">
-            <a href="{% url 'delete' user.id course.id %}"><button class="index-btn">Delete Course</button></a>
+        <div class="container d-flex flex-column justify-content-center align-items-left mt-3">
+            <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="m-3 course-image-container">
+                    <img src="{{ course.image.url }}" class="img-thumbnail">
+                </div>
+                <div class="d-flex flex-column">
+                    <h4>Course: {{ course.name }}</h4>
+                    <h4>Category: {{ course.category }}</h4>
+                    <h4>Description: {{ course.description }}</h4>
+                </div>
+                <div class="d-flex justify-content-center align-items-center">
+                    <a href="{% url 'delete' user.id course.id %}"><button class="index-btn">Delete Course</button></a>
+                </div>
+            </div>
+            {% if lessons %}
+                <div>
+                    <h4>Lessons:</h4>
+                    <ul>
+                        {% for lesson in course_materials %}
+                            <div class="row justify-content-center">
+                                <p class="col mb-1">{{ lesson.name }}</p>
+                                <a class="col mb-1"><button class="index-btn">Edit</button></a>
+                                <a class="col mb-1"><button class="index-btn">Delete</button></a>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <div class="mb-2">You have not added any lessons yet.</div>
+                    <a href="{% url 'add_material' user.id course.id %}"><button class="index-btn">Add Lesson</button></a>
+                </div>
+            {% endif %}
         </div>
     {% else %}
         <div class="container d-flex flex-column justify-content-center align-items-center">

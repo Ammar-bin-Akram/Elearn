@@ -13,6 +13,9 @@ Elearn - Add Courses
         <form method="post" action="{% url 'add' user.id %}" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
+            <ul>
+                <li>Upload Image of dimensions 500x500 for better experience.</li>
+            </ul>
             <div class="d-flex flex-row justify-content-center">
             <button type="submit" class="index-btn">Add Course</button>
             </div>
