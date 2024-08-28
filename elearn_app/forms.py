@@ -30,7 +30,7 @@ class AddCourseForm(forms.Form):
     image = forms.ImageField(required=False)
 
 
-class AddCourseMterialForm(forms.Form):
+class AddCourseMaterialForm(forms.Form):
     name = forms.CharField(max_length=100)
     description = forms.CharField(widget=forms.Textarea)
     file = forms.FileField(required=True)

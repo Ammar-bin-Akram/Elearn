@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .forms import SignUpForm, LoginForm, AddCourseForm
+from .forms import SignUpForm, LoginForm, AddCourseForm, AddCourseMaterialForm
 from django.contrib.auth.models import User
-from .models import Profile, Course
+from .models import Profile, Course, CourseMaterial
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
@@ -125,7 +125,24 @@ def delete_course(request, course_id, user_id):
     return redirect('home', user_id=user.pk)
 
 def add_course_material(request, user_id, course_id):
-    user = User.objects.get(pk=user_id)
-    profile = Profile.objects.get(user=user)
-    course = Course.objects.get(pk=course_id)
-    return HttpResponse(f'Add course material to {course.name} by {user.username}')
+    if request.method == "POST":
+        form = AddCourseMaterialForm(request.POST, request.FILES)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            description = form.cleaned_data['description']
+            file = form.cleaned_data.get('file')
+            uploaded_at = timezone.now()
+            user = User.objects.get(pk=user_id)
+            course = Course.objects.get(pk=course_id)
+            course_material = CourseMaterial.objects.create(name=name, description=description, file=file, uploaded_at=uploaded_at, course=course)
+            messages.success(request, f'Material {file} has been added to {course.name}')
+            return redirect('home', user_id=user.pk)
+    else:
+        user = User.objects.get(pk=user_id)
+        course = Course.objects.get(pk=course_id)
+        profile = Profile.objects.get(user=user)
+        form = AddCourseMaterialForm()
+        context = {'user': user, 'profile': profile, 'course': course, 'form': form}
+        return render(request, 'elearn_app/add_material.html', context)
+    
+
