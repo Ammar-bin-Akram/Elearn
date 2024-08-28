@@ -28,7 +28,6 @@ def signup(request):
             phone = form.cleaned_data['phone']
             typeof_user = form.cleaned_data['role']
             user_image = form.cleaned_data.get('user_image')
-            print(user_image)
             if user_image is None:
                 user_image = "profile_pics/default.png"
                 if password != confirmPassword:
@@ -100,7 +99,7 @@ def add_course(request, user_id):
                 image = form.cleaned_data.get('image')
                 created_at = timezone.now()
                 if image is None:
-                    image = 'course_pics/default.jpg'
+                    image = 'course_pics/default.png'
                     course = Course.objects.create(name=name, category=category, description=description, created_at=created_at, image=image, profile=profile)
                     course.save()
                 else:
@@ -122,6 +121,16 @@ def view_course(request, user_id, course_id):
     course_materials = CourseMaterial.objects.filter(course=course)
     context = {'user': user, 'course': course, 'profile': profile, 'course_materials': course_materials}
     return render(request, 'elearn_app/view_course.html', context)
+
+
+def edit_course(request, user_id, course_id):
+    user = User.objects.get(pk=user_id)
+    course = Course.objects.get(pk=course_id)
+    profile = Profile.objects.get(user=user)
+    form = AddCourseForm()
+    context = {'user': user, 'course': course, 'profile': profile, 'form': form}
+    return render(request, 'elearn_app/edit_course.html', context)
+
 
 @login_required
 def delete_course(request, user_id, course_id):

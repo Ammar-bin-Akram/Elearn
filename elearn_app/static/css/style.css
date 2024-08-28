@@ -32,11 +32,11 @@ nav{
     box-shadow: none;
 }
 
-.alert{
-    position: fixed;
-    top: 10px;
-    right: 0px;
-    max-width: 300px;
+.alert-container{
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    max-width: 500px;
 }
 
 .main-login-form{

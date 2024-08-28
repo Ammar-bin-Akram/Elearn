@@ -17,7 +17,7 @@
                                 <img class="card-img-top" src="{{ course.image.url }}" alt="Card image cap">
                                 <div class="card-body">
                                 <h5 class="card-title">{{ course.name }}</h5>
-                                <p class="card-text">{{ course.description  }}</p>
+                                <p class="card-text">{{ course.description|truncatechars:150 }}</p>
                                 <p class="card-text">Author: {{ course.profile.user.username }}</p>
                                 <a href="{% url 'view' user.id course.id %}" class="btn btn-primary">View</a>
                                 </div>
@@ -41,13 +41,18 @@
                             </div>
                         </div>
                     {% endfor %}
+            </div>
+                    <div class="d-flex flex-row justify-content-center">
+                        <a href="{% url 'add' user.id %}"><button class="index-btn">Add Course</button></a>
+                    </div>
                 {% else %}
-                    <div>You have not added courses yet.</div>
+                    <div class="d-flex flex-column justify-content-center align-items-center">
+                        <div>You have not added courses yet.</div>
+                        <div class="d-flex flex-row justify-content-center">
+                            <a href="{% url 'add' user.id %}"><button class="index-btn">Get Started</button></a>
+                        </div>
+                    </div>
                 {% endif %}
-            </div>
-            <div class="d-flex flex-row justify-content-center">
-                <a href="{% url 'add' user.id %}"><button class="index-btn">Add Course</button></a>
-            </div>
         {% endif %}
     </div>
 {% endblock %}
