@@ -14,7 +14,7 @@ class Course(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     created_at = models.DateTimeField(editable=False)
-    image = models.ImageField(upload_to='course_pics', blank=True, default='course_pics/default.jpg', null=False)
+    image = models.ImageField(upload_to='course_pics', blank=True, default='course_pics/default.png', null=False)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
 

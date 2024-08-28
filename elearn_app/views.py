@@ -28,6 +28,7 @@ def signup(request):
             phone = form.cleaned_data['phone']
             typeof_user = form.cleaned_data['role']
             user_image = form.cleaned_data.get('user_image')
+            print(user_image)
             if user_image is None:
                 user_image = "profile_pics/default.png"
                 if password != confirmPassword:
