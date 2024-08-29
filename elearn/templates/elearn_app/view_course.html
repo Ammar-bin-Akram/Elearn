@@ -18,7 +18,6 @@ Elearn - View Courses
                     <h4>Description: {{ course.description }}</h4>
                 </div>
                 <div class="d-flex flex-column justify-content-between align-items-between">
-                    <a href="{% url 'edit' user.id course.id %}"><button class="index-btn mb-3">Edit</button></a>
                     <a href="{% url 'delete' user.id course.id %}"><button class="index-btn">Delete</button></a>
                 </div>
             </div>
@@ -43,14 +42,27 @@ Elearn - View Courses
             {% endif %}
         </div>
     {% else %}
-        <div class="container d-flex flex-column justify-content-center align-items-center">
-            <h1>Course: {{ course.name }}</h1>
-            <h2>Category: {{ course.category }}</h2>
-            <h2>Description: {{ course.description }}</h2>
-            <img src="{{ course.image.url }}" class="img-fluid">
+        <div class="container d-flex flex-column justify-content-center align-items-left mt-3">
+            <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="m-3 course-image-container">
+                    <img src="{{ course.image.url }}" class="img-thumbnail">
+                </div>
+                <div class="d-flex flex-column">
+                    <h4>Course: {{ course.name }}</h4>
+                    <h4>Category: {{ course.category }}</h4>
+                    <h4>Description: {{ course.description }}</h4>
+                    <h4>Total Lessons: {{ total_lessons }}</h4>
+                </div>
+            </div>
         </div>
-        <div class="d-flex flex-row justify-content-center pt-3">
-            <a href="#"><button class="index-btn">Enroll</button></a>
-        </div>
+        {% if enrolled %}
+            <div class="d-flex flex-row justify-content-center pt-3">
+                <a href="{% url 'learn' user.id course.id first_material.id %}"><button class="index-btn">Start Learning</button></a>
+            </div>
+        {% else %}
+            <div class="d-flex flex-row justify-content-center pt-3">
+                <a href="{% url 'enroll' user.id course.id %}"><button class="index-btn">Enroll</button></a>
+            </div>
+        {% endif %}
     {% endif %}
 {% endblock %}

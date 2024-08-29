@@ -37,13 +37,21 @@ Elearn - Student Courses
                 {% for course in courses %}
                     <div>
                         <h3>{{ course.name }}</h3>
-                        <p>{{ course.description }}</p>
-                        <p>Author: {{ course.profile.user.username }}</p>
+                        <p>{{ course.course.description }}</p>
+                        <p>Author: {{ course.teacher.user.username }}</p>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div>You have not enrolled in any courses yet.</div>
+            <div class="d-flex flex-column justify-content-center align-items-center mt-3">
+                <div>
+                    <h3>You have not enrolled in any courses yet.</h3>
+                </div>
+                <div>
+                    <a href="{% url 'home' user.id %}"><button class="index-btn">Enroll Now</button></a>
+                </div>
+            </div>
+
         {% endif %}
     {% endif %}
 {% endblock %}

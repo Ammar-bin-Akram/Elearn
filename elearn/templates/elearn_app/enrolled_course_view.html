@@ -1,0 +1,19 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block title %}
+Elearn - Enrolled Course
+{% endblock %}
+
+{% block content %}
+    <div class="container d-flex flex-column justify-content-center align-items-center">
+        <h3>You are learning: {{ course.name }}</h3>
+        <h4>Lesson: {{ current_material.name }}</h4>
+        <video controls width="640" height="340">
+            <source src="{{ current_material.file.url }}" type="video/mp4">
+        </video>
+        <div>
+            <a href="#">Next >></a>
+        </div>
+    </div>
+{% endblock %}
