@@ -1,0 +1,49 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block title %}
+Elearn - Student Courses
+{% endblock %}
+
+{% block content %}
+    {% if profile.user_type == 'teacher' %}
+        <div class="container">
+            <div class="d-flex flex-row justify-content-center">
+                <h3>Total Courses: {{ num_courses }}</h3>
+            </div>
+            <div class="d-flex flex-row justify-content-between flex-wrap container" id="courses-list-home">
+                {% if courses %}
+                    {% for course in courses %}
+                        <div class="card" style="width: 18rem;">
+                            <img class="card-img-top" src="{{ course.image.url }}" alt="Card image cap">
+                            <div class="card-body">
+                            <h5 class="card-title">{{ course.name }}</h5>
+                            <p class="card-text">{{ course.description|truncatechars:150 }}</p>
+                            <p class="card-text">Author: {{ course.profile.user.username }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div>There are no courses</div>
+                {% endif %}
+            </div>
+            <div class="d-flex flex-row justify-content-center m-3">
+                <a href="{% url 'add' user.id %}"><button class="index-btn">Add Course</button></a>
+            </div>
+        </div>
+    {% else %}
+        {% if courses %}
+            <div class="container p-3">
+                {% for course in courses %}
+                    <div>
+                        <h3>{{ course.name }}</h3>
+                        <p>{{ course.description }}</p>
+                        <p>Author: {{ course.profile.user.username }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div>You have not enrolled in any courses yet.</div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

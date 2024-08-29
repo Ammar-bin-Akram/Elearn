@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .forms import SignUpForm, LoginForm, AddCourseForm, AddCourseMaterialForm
 from django.contrib.auth.models import User
-from .models import Profile, Course, CourseMaterial
+from .models import Profile, Course, CourseMaterial, Enroll
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
@@ -110,7 +110,7 @@ def add_course(request, user_id):
                 return redirect('home', user_id=user.pk)
         else:
             form = AddCourseForm()
-        context = {'form': form}
+        context = {'form': form, 'profile': profile}
         return render(request, 'elearn_app/add_course.html', context)
     
 
@@ -168,6 +168,20 @@ def add_course_material(request, user_id, course_id):
 
 def home_guest(request):
     return HttpResponse('You can view courses here!')
+
+
+def all_courses(request, user_id):
+    user = User.objects.get(pk=user_id)
+    profile = Profile.objects.get(user=user)
+    if profile.user_type == 'teacher':
+        courses = Course.objects.filter(profile=profile)
+        num_courses = courses.count()
+        context = {'user': user, 'profile': profile, 'courses': courses, 'num_courses': num_courses}
+        return render(request, 'elearn_app/all_courses.html', context)
+    elif profile.user_type == 'student':
+        enrolled_courses = Enroll.objects.filter(student=profile)
+        context = {'user': user, 'profile': profile, 'courses': enrolled_courses}
+        return render(request, 'elearn_app/all_courses.html', context)
     
 # function to give the user uploaded images and files a custom name as filename_randomStringSequence.extension
 def custom_filename(filename):

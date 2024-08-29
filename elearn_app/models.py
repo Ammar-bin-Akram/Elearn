@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Profile(models.Model):
@@ -24,3 +25,12 @@ class CourseMaterial(models.Model):
     file = models.FileField(upload_to='course_materials', null=False)
     uploaded_at = models.DateTimeField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+
+class Enroll(models.Model):
+    name = models.CharField(max_length=100)
+    enrolled_at = models.DateTimeField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='student')
+    teacher = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='teacher')
+
