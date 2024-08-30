@@ -15,6 +15,7 @@ urlpatterns = [
     path('add_material/<int:user_id>/<int:course_id>/', views.add_course_material, name='add_material'),
     path('enroll/<int:user_id>/<int:course_id>/', views.enroll_course, name='enroll'),
     path('learn-course/<int:user_id>/<int:course_id>/<int:course_material_id>/', views.learn_course, name='learn'),
+    path('profile/<int:user_id>/', views.user_profile, name='profile'),
     path('search/<int:user_id>/', views.search_category, name='search'),
     path('guest_home/', views.home_guest, name='guest_home'),
 ]

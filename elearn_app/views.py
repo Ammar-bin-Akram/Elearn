@@ -113,7 +113,7 @@ def add_course(request, user_id):
                     course = Course.objects.create(name=name, category=category, description=description, created_at=created_at, image=image, profile=profile)
                     course.save()
                 messages.success(request, 'Your course has been added!')
-                return redirect('home', user_id=user.pk)
+                return redirect('home', user_id=user.pk, category='all')
         else:
             form = AddCourseForm()
         context = {'form': form, 'profile': profile}
@@ -129,7 +129,10 @@ def view_course(request, user_id, course_id):
         context = {'user': user, 'course': course, 'profile': profile, 'course_materials': course_materials}
     else:
         course = Course.objects.get(pk=course_id)
-        enroll = Enroll.objects.get(course=course, student=profile)
+        try:
+            enroll = Enroll.objects.get(course=course, student=profile)
+        except:
+            enroll = None
         if enroll:
             enrolled = True
         else:
@@ -158,7 +161,7 @@ def delete_course(request, user_id, course_id):
     course_name = course.name
     course.delete()
     messages.success(request, f'Course {course_name} has been deleted!')
-    return redirect('home', user_id=user.pk)
+    return redirect('home', user_id=user.pk, category='all')
 
 
 def add_course_material(request, user_id, course_id):
@@ -175,7 +178,7 @@ def add_course_material(request, user_id, course_id):
             uploaded_at = timezone.now()
             course_material = CourseMaterial.objects.create(name=name, description=description, file=file, uploaded_at=uploaded_at, course=course)
             messages.success(request, f'Material {file_name} has been added to {course.name}')
-            return redirect('home', user_id=user.pk)
+            return redirect('home', user_id=user.pk, category='all')
     else:
         user = User.objects.get(pk=user_id)
         course = Course.objects.get(pk=course_id)
@@ -211,7 +214,7 @@ def enroll_course(request, user_id, course_id):
     enrolled_at = timezone.now()
     enroll = Enroll.objects.create(name=course.name, enrolled_at=enrolled_at, course=course, student=student, teacher=teacher)
     messages.success(request, f'You have enrolled in the course {course.name} by {teacher.user.username}')
-    return redirect('home', user_id=student_user.pk)
+    return redirect('home', user_id=student_user.pk, category='all')
 
 
 def learn_course(request, user_id, course_id, course_material_id=1):
@@ -239,7 +242,14 @@ def search_category(request, user_id):
             return redirect('home', user_id=user.pk, category=category)
     else:
         user = User.objects.get(pk=user_id)
-        return redirect('home', user_id=user.pk)
+        return redirect('home', user_id=user.pk, category='all')
+    
+
+def user_profile(request, user_id):
+    user = User.objects.get(pk=user_id)
+    profile = Profile.objects.get(user=user)
+    context = {'user': user, 'profile': profile}
+    return render(request, 'elearn_app/profile.html', context)
 
 
 # function to give the user uploaded images and files a custom name as filename_randomStringSequence.extension
