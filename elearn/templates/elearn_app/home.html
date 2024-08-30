@@ -5,10 +5,13 @@
     <div class="container-fluid pt-3">
         {% if profile.user_type == 'student' %}
             <div class="container d-flex flex-row justify-content-center">
+                <form method="post" action="{% url 'search' user.id %}">
+                    {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Seacrh Courses" aria-label="Seacrh Courses" aria-describedby="button-addon2">
-                        <button class="btn btn-outline-primary" type="button" id="button-addon2">Search</button>
+                        <input type="text" class="form-control" placeholder="Seacrh Courses" aria-label="Seacrh Courses" aria-describedby="button-addon2" name="category">
+                        <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>    
                     </div>
+                </form>
             </div>
             <div class="d-flex flex-row justify-content-between flex-wrap container" id="courses-list-home">
                     {% if all_courses %}

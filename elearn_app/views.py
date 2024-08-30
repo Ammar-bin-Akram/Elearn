@@ -75,13 +75,19 @@ def logout(request):
     return redirect('index')
 
 @login_required
-def home(request, user_id):
+def home(request, user_id, category):
     user = User.objects.get(pk=user_id)
     profile = Profile.objects.get(user=user)
     courses = Course.objects.filter(profile=profile)
-    all_courses = Course.objects.all()
-    context = {'user': user, 'profile': profile, 'courses': courses, 'all_courses': all_courses}
-    return render(request, 'elearn_app/home.html', context)
+    if category == 'all':    
+        all_courses = Course.objects.all()
+        context = {'user': user, 'profile': profile, 'courses': courses, 'all_courses': all_courses}
+        return render(request, 'elearn_app/home.html', context)
+    else:
+        all_courses = Course.objects.filter(category=category)
+        context = {'user': user, 'profile': profile, 'courses': courses, 'all_courses': all_courses}
+        return render(request, 'elearn_app/home.html', context)
+
 
 @login_required
 def add_course(request, user_id):
@@ -208,12 +214,32 @@ def enroll_course(request, user_id, course_id):
     return redirect('home', user_id=student_user.pk)
 
 
-def learn_course(request, user_id, course_id, course_material_id):
+def learn_course(request, user_id, course_id, course_material_id=1):
     course = Course.objects.get(pk=course_id)
     course_materials = CourseMaterial.objects.filter(course=course)
     current_material = CourseMaterial.objects.get(pk=course_material_id)
+    next_material = course_materials.filter(pk__gt=course_material_id).first()
     context = {'course': course, 'course_materials': course_materials, 'current_material': current_material}
     return render(request, 'elearn_app/enrolled_course_view.html', context)
+
+
+def search_category(request, user_id):
+    if request.method == 'POST':
+        category = request.POST.get('category')
+        category = category.capitalize()
+        courses = Course.objects.filter(category=category)
+        if courses.count() == 0:
+            messages.error(request, f'No courses found for {category}! You can view other courses below.')
+            return redirect('home', user_id=user_id, category='all')
+        else:
+            count = courses.count()
+            user = User.objects.get(pk=user_id)
+            context = {'user': user, 'courses': courses}
+            messages.success(request, f'You have searched for {category}. We found {count} courses!')
+            return redirect('home', user_id=user.pk, category=category)
+    else:
+        user = User.objects.get(pk=user_id)
+        return redirect('home', user_id=user.pk)
 
 
 # function to give the user uploaded images and files a custom name as filename_randomStringSequence.extension

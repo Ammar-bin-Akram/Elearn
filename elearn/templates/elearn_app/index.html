@@ -8,7 +8,7 @@
             <h1 style="color: white;">Welcome to <span>Elearn</span></h1>
             <h2 style="color: white;">Your only stop to enhance experience of online learning</h2>
             <div class="container d-flex flex-row justify-content-evenly mt-5">
-                <a href="{% url 'home' user.id %}"><button class="index-btn">View Courses</button></a>
+                <a href="{% url 'home' user_id=user.id category='all' %}"><button class="index-btn">View Courses</button></a>
                 <a href="#"><button class="index-btn">Profile</button></a>
             </div>
         </div>
