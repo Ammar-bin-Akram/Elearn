@@ -33,6 +33,9 @@ Elearn - Enrolled Course
                     <a href="{% url 'complete' user.id course.id %}">Finish Course</a>
                 {% endif %}
             </div>
+            <div class="current-material-div mt-2">
+                <a href="{% url 'complete_material' user.id current_material.id course.id %}">Mark Completed</a>
+            </div>
         </div>
     </div>
 {% endblock %}

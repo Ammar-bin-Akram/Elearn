@@ -57,9 +57,15 @@ Elearn - View Courses
         </div>
         {% if enrolled %}
             {% if first_material %}
-                <div class="d-flex flex-row justify-content-center pt-3">
-                    <a href="{% url 'learn' user.id course.id first_material.id %}"><button class="index-btn">Start Learning</button></a>
-                </div>
+                {% if completion %}
+                    <div class="d-flex flex-row justify-content-center pt-3">
+                        <a href="#"><button class="index-btn">Rate Course</button></a>
+                    </div>
+                {% else %}
+                    <div class="d-flex flex-row justify-content-center pt-3">
+                        <a href="{% url 'learn' user.id course.id first_material.id %}"><button class="index-btn">Start Learning</button></a>
+                    </div>
+                {% endif %}
             {% else %}
                 <div class="d-flex flex-row justify-content-center pt-3">
                     <p>Nothing has been uploaded by the teacher in this course yet.</p>

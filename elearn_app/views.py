@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .forms import SignUpForm, LoginForm, AddCourseForm, AddCourseMaterialForm
 from django.contrib.auth.models import User
-from .models import Profile, Course, CourseMaterial, Enroll
+from .models import Profile, Course, CourseMaterial, Enroll, CourseCompletionProgress
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
@@ -136,12 +136,14 @@ def view_course(request, user_id, course_id):
             enroll = None
         if enroll:
             enrolled = True
+            completion = enroll.completed
         else:
             enrolled = False
+            completion = False
         course_materials = CourseMaterial.objects.filter(course=course)
         first_material = course_materials.first()
         total_lessons = course_materials.count()
-        context = {'user':user, 'course': course, 'profile': profile, 'course_materials': course_materials, 'enrolled': enrolled, 'total_lessons': total_lessons, 'first_material': first_material}
+        context = {'user':user, 'course': course, 'profile': profile, 'course_materials': course_materials, 'enrolled': enrolled, 'total_lessons': total_lessons, 'first_material': first_material, 'completion': completion}
 
     return render(request, 'elearn_app/view_course.html', context)
 
@@ -211,9 +213,13 @@ def enroll_course(request, user_id, course_id):
     student_user = User.objects.get(pk=user_id)
     student = Profile.objects.get(user=student_user)
     course = Course.objects.get(pk=course_id)
+    course_materials = CourseMaterial.objects.filter(course=course)
     teacher = course.profile
     enrolled_at = timezone.now()
     enroll = Enroll.objects.create(name=course.name, enrolled_at=enrolled_at, course=course, student=student, teacher=teacher)
+    for material in course_materials:
+        course_progress = CourseCompletionProgress.objects.create(course_material=material, student=student)
+        course_progress.save()
     messages.success(request, f'You have enrolled in the course {course.name} by {teacher.user.username}')
     return redirect('home', user_id=student_user.pk, category='all')
 
@@ -254,18 +260,24 @@ def user_profile(request, user_id):
         courses = Course.objects.filter(profile=profile)
         enrolls = Enroll.objects.filter(teacher=profile)
         # making a dictionary to store the number of enrollemnts in a certain course by the teacher
-        enrollment_count = {}
-        for enroll in enrolls:
-            if enroll.course_id not in enrollment_count: # type: ignore
-                enrollment_count[enroll.course_id] = 1 # type: ignore
-            elif enroll.course_id in enrollment_count: # type: ignore
-                enrollment_count[enroll.course_id] += 1 # type: ignore
-        # getting the course that has highest number of enrollments
-        most_enrolled_course_id = max(enrollment_count, key=enrollment_count.get)
-        # extracting the most enrolled course from database
-        most_enrolled_course = Course.objects.get(pk=most_enrolled_course_id)
-        context = {'user': user, 'profile': profile, 'courses': courses, 'most_enrolled_course': most_enrolled_course, 'students': enrolls}
-        return render(request, 'elearn_app/profile.html', context)
+        if enrolls:   
+            enrollment_count = {}
+            for enroll in enrolls:
+                if enroll.course_id not in enrollment_count: # type: ignore
+                    enrollment_count[enroll.course_id] = 1 # type: ignore
+                elif enroll.course_id in enrollment_count: # type: ignore
+                    enrollment_count[enroll.course_id] += 1 # type: ignore
+            # getting the course that has highest number of enrollments
+            most_enrolled_course_id = max(enrollment_count, key=enrollment_count.get)
+            # extracting the most enrolled course from database
+            most_enrolled_course = Course.objects.get(pk=most_enrolled_course_id)
+            context = {'user': user, 'profile': profile, 'courses': courses, 'most_enrolled_course': most_enrolled_course, 'students': enrolls}
+            return render(request, 'elearn_app/profile.html', context)
+        else:
+            enrolls = 0
+            most_enrolled_course = None
+            context = {'user': user, 'profile': profile, 'courses': courses, 'most_enrolled_course': most_enrolled_course, 'students': enrolls}
+            return render(request, 'elearn_app/profile.html', context)
     elif profile.user_type == 'student':
         enrolled_courses = Enroll.objects.filter(student=profile)
         context = {'user': user, 'profile': profile, 'courses': enrolled_courses}
@@ -276,11 +288,18 @@ def rate_course(request, user_id, course_id):
     user = User.objects.get(pk=user_id)
     course = Course.objects.get(pk=course_id)
     profile = Profile.objects.get(user=user)
-    enroll = Enroll.objects.get(student=profile, course=course)
-    if enroll.completed:
-        return render(request, 'elearn_app/rate_course.html')
+    try:
+        enroll = Enroll.objects.get(student=profile, course=course)
+    except: 
+        enroll = None
+    if enroll:      
+        if enroll.completed:
+            return render(request, 'elearn_app/rate_course.html')
+        else:
+            return HttpResponse('You have not completed the course yet!')
     else:
-        return HttpResponse('You have not completed the course yet!')
+        messages.error(request, 'You have not enrolled in this course yet.')
+        return redirect('home', user_id=user.pk, category='all')
     
 
 def course_completion(request, user_id, course_id):
@@ -289,8 +308,22 @@ def course_completion(request, user_id, course_id):
     profile = Profile.objects.get(user=user)
     enroll = Enroll.objects.get(student=profile, course=course)
     enroll.completed = True
+    enroll.save()
     messages.success(request, f'Congratulations! You have completed the course {course.name}')
     return redirect('home', user_id=user.pk, category='all')
+
+
+def complete_material(request, user_id, course_material_id, course_id):
+    user = User.objects.get(pk=user_id)
+    profile = Profile.objects.get(user=user)
+    course = Course.objects.get(pk=course_id)
+    course_material = CourseMaterial.objects.get(pk=course_material_id)
+    course_material_completion = CourseCompletionProgress.objects.get(student=profile, course_material=course_material)
+    course_material_completion.completed = True
+    course_material_completion.completed_at = timezone.now()
+    course_material_completion.save()
+    messages.success(request, f'You have completed the lesson {course_material.name}')
+    return redirect('learn', user_id=user.pk, course_id=course.pk, course_material_id=course_material.pk)
 
 
 # function to give the user uploaded images and files a custom name as filename_randomStringSequence.extension

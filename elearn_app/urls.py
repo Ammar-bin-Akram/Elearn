@@ -20,4 +20,5 @@ urlpatterns = [
     path('guest_home/', views.home_guest, name='guest_home'),
     path('rate-course/<int:user_id>/<int:course_id>/', views.rate_course, name='rate'),
     path('course-completion/<int:user_id>/<int:course_id>/', views.course_completion, name='complete'),
+    path('coursematerial-completion/<int:user_id>/<int:course_material_id>/<int:course_id>/', views.complete_material, name='complete_material'),
 ]

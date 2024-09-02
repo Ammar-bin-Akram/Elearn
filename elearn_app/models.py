@@ -42,6 +42,14 @@ class Rating(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     student = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
+
+class CourseCompletionProgress(models.Model):
+    course_material = models.ForeignKey(CourseMaterial, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(default=timezone.now)
+    student = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
+
     
 
 
