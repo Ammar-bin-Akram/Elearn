@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from django.utils import timezone
 import string
 import random
+from django.db import models
 
 # Create your views here.
 
@@ -248,8 +249,26 @@ def search_category(request, user_id):
 def user_profile(request, user_id):
     user = User.objects.get(pk=user_id)
     profile = Profile.objects.get(user=user)
-    context = {'user': user, 'profile': profile}
-    return render(request, 'elearn_app/profile.html', context)
+    if profile.user_type == 'teacher':
+        courses = Course.objects.filter(profile=profile)
+        enrolls = Enroll.objects.filter(teacher=profile)
+        # making a dictionary to store the number of enrollemnts in a certain course by the teacher
+        enrollment_count = {}
+        for enroll in enrolls:
+            if enroll.course_id not in enrollment_count: # type: ignore
+                enrollment_count[enroll.course_id] = 1 # type: ignore
+            elif enroll.course_id in enrollment_count: # type: ignore
+                enrollment_count[enroll.course_id] += 1 # type: ignore
+        # getting the course that has highest number of enrollments
+        most_enrolled_course_id = max(enrollment_count, key=enrollment_count.get)
+        # extracting the most enrolled course from database
+        most_enrolled_course = Course.objects.get(pk=most_enrolled_course_id)
+        context = {'user': user, 'profile': profile, 'courses': courses, 'most_enrolled_course': most_enrolled_course, 'students': enrolls}
+        return render(request, 'elearn_app/profile.html', context)
+    elif profile.user_type == 'student':
+        enrolled_courses = Enroll.objects.filter(student=profile)
+        context = {'user': user, 'profile': profile, 'courses': enrolled_courses}
+        return render(request, 'elearn_app/profile.html', context)
 
 
 # function to give the user uploaded images and files a custom name as filename_randomStringSequence.extension
