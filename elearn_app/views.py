@@ -296,7 +296,7 @@ def rate_course(request, user_id, course_id):
         if enroll.completed:
             return render(request, 'elearn_app/rate_course.html')
         else:
-            return HttpResponse('You have not completed the course yet!')
+            return HttpResponse('You are not completed the course yet!')
     else:
         messages.error(request, 'You have not enrolled in this course yet.')
         return redirect('home', user_id=user.pk, category='all')
