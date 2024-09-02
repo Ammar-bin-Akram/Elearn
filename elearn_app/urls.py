@@ -18,4 +18,6 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.user_profile, name='profile'),
     path('search/<int:user_id>/', views.search_category, name='search'),
     path('guest_home/', views.home_guest, name='guest_home'),
+    path('rate-course/<int:user_id>/<int:course_id>/', views.rate_course, name='rate'),
+    path('course-completion/<int:user_id>/<int:course_id>/', views.course_completion, name='complete'),
 ]

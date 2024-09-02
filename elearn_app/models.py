@@ -33,4 +33,15 @@ class Enroll(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     student = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='student')
     teacher = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='teacher')
+    completed = models.BooleanField(default=False)
+
+
+class Rating(models.Model):
+    rating = models.IntegerField()
+    rated_at = models.DateTimeField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
+    
+
 

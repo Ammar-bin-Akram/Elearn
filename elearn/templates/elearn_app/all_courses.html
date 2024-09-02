@@ -38,6 +38,11 @@ Elearn - Student Courses
                         <h3>{{ course.name }}</h3>
                         <p>Course Description: {{ course.course.description }}</p>
                         <p>Author: {{ course.teacher.user.username }}</p>
+                        {% if course.completed %}
+                            <p>Status: Complete</p>
+                        {% else %}
+                            <p>Status: InProgress</p>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>

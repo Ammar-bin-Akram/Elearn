@@ -6,14 +6,33 @@ Elearn - Enrolled Course
 {% endblock %}
 
 {% block content %}
-    <div class="container d-flex flex-column justify-content-center align-items-center">
-        <h3>You are learning: {{ course.name }}</h3>
-        <h4>Lesson: {{ current_material.name }}</h4>
-        <video controls width="640" height="340">
-            <source src="{{ current_material.file.url }}" type="video/mp4">
-        </video>
-        <div>
-            <a href="#">Next >></a>
+    <div class="container d-flex flex-row justify-content-between mt-3">
+        <div class="d-flex flex-column justify-content-center course-navigation-div">
+            {% for material in course_materials %}
+                {% if current_material == material %}
+                    <div class="mb-2 current-material-div d-flex flex-row justify-content-between align-items-center">
+                        <a href="{% url 'learn' user.id course.id material.id %}">{{ material.name }}</a>
+                    </div>
+                {% else %}
+                    <div class="course-items-div mb-2">
+                        <a href="{% url 'learn' user.id course.id material.id %}">{{ material.name }}</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="container d-flex flex-column justify-content-center align-items-center">
+            <h3>You are learning: {{ course.name }}</h3>
+            <h4>Lesson: {{ current_material.name }}</h4>
+            <video controls width="640" height="340">
+                <source src="{{ current_material.file.url }}" type="video/mp4">
+            </video>
+            <div>
+                {% if has_next %}
+                    <a href="{% url 'learn' user.id course.id next_material.id %}">{{ next_material.name }} >></a>
+                {% else %}
+                    <a href="{% url 'complete' user.id course.id %}">Finish Course</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -223,7 +223,8 @@ def learn_course(request, user_id, course_id, course_material_id=1):
     course_materials = CourseMaterial.objects.filter(course=course)
     current_material = CourseMaterial.objects.get(pk=course_material_id)
     next_material = course_materials.filter(pk__gt=course_material_id).first()
-    context = {'course': course, 'course_materials': course_materials, 'current_material': current_material}
+    has_next_material = True if next_material else False
+    context = {'course': course, 'course_materials': course_materials, 'current_material': current_material, 'next_material': next_material, 'has_next': has_next_material}
     return render(request, 'elearn_app/enrolled_course_view.html', context)
 
 
@@ -269,6 +270,27 @@ def user_profile(request, user_id):
         enrolled_courses = Enroll.objects.filter(student=profile)
         context = {'user': user, 'profile': profile, 'courses': enrolled_courses}
         return render(request, 'elearn_app/profile.html', context)
+    
+
+def rate_course(request, user_id, course_id):
+    user = User.objects.get(pk=user_id)
+    course = Course.objects.get(pk=course_id)
+    profile = Profile.objects.get(user=user)
+    enroll = Enroll.objects.get(student=profile, course=course)
+    if enroll.completed:
+        return render(request, 'elearn_app/rate_course.html')
+    else:
+        return HttpResponse('You have not completed the course yet!')
+    
+
+def course_completion(request, user_id, course_id):
+    user = User.objects.get(pk=user_id)
+    course = Course.objects.get(pk=course_id)
+    profile = Profile.objects.get(user=user)
+    enroll = Enroll.objects.get(student=profile, course=course)
+    enroll.completed = True
+    messages.success(request, f'Congratulations! You have completed the course {course.name}')
+    return redirect('home', user_id=user.pk, category='all')
 
 
 # function to give the user uploaded images and files a custom name as filename_randomStringSequence.extension
