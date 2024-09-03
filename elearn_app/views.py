@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .forms import SignUpForm, LoginForm, AddCourseForm, AddCourseMaterialForm
 from django.contrib.auth.models import User
-from .models import Profile, Course, CourseMaterial, Enroll, CourseCompletionProgress
+from .models import Profile, Course, CourseMaterial, Enroll, CourseCompletionProgress, Rating
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
@@ -285,21 +285,35 @@ def user_profile(request, user_id):
     
 
 def rate_course(request, user_id, course_id):
-    user = User.objects.get(pk=user_id)
-    course = Course.objects.get(pk=course_id)
-    profile = Profile.objects.get(user=user)
-    try:
-        enroll = Enroll.objects.get(student=profile, course=course)
-    except: 
-        enroll = None
-    if enroll:      
-        if enroll.completed:
-            return render(request, 'elearn_app/rate_course.html')
-        else:
-            return HttpResponse('You are not completed the course yet!')
-    else:
-        messages.error(request, 'You have not enrolled in this course yet.')
+    if request.method == 'POST':
+        rating = request.POST.get('rating')
+        rating = int(rating)
+        course = Course.objects.get(pk=course_id)
+        rated_at = timezone.now()
+        user = User.objects.get(pk=user_id)
+        student = Profile.objects.get(user=user)
+        rate = Rating.objects.create(rating=rating, rated_at=rated_at, course=course, student=student)
+        rate.save()
+        messages.success(request, f'Your rating has been submitted for course {course.name}.')
         return redirect('home', user_id=user.pk, category='all')
+    else:
+        user = User.objects.get(pk=user_id)
+        course = Course.objects.get(pk=course_id)
+        profile = Profile.objects.get(user=user)
+        try:
+            enroll = Enroll.objects.get(student=profile, course=course)
+        except: 
+            enroll = None
+        if enroll:      
+            if enroll.completed:
+                context = {'user': user, 'course': course, 'profile': profile}
+                return render(request, 'elearn_app/rate_course.html', context)
+            else:
+                messages.error(request, 'You have not completed the course yet!')
+                return redirect('home', user_id=user.pk, category='all')
+        else:
+            messages.error(request, 'You are not enrolled in this course yet.')
+            return redirect('home', user_id=user.pk, category='all')
     
 
 def course_completion(request, user_id, course_id):

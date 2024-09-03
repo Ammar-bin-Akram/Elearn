@@ -6,7 +6,25 @@ Elearn - Rate course
 {% endblock %}
 
 {% block content %}
-<div>
-    You are going to rate the course.
+<div class="container mt-3">
+    <form method="post" action="">
+        {% csrf_token %}
+        <!-- Email input -->
+        <div data-mdb-input-init class="form-outline mb-4">
+            <label class="form-label" for="form2Example1">Course Name</label>
+            <input name="course-name" type="text" id="form2Example1" class="form-control" value="{{ course.name }}" disabled/>
+        </div>
+      
+        <!-- Password input -->
+        <div data-mdb-input-init class="form-outline mb-4">
+            <label class="form-label" for="form2Example2">Rating <span><small>(out of 10)</small></span></label>
+            <input name="rating" type="text" id="form2Example2" class="form-control" />
+        </div>
+      
+        <!-- Submit button -->
+         <div class="d-flex flex-row justify-content-center">
+            <button data-mdb-ripple-init type="submit" class="btn btn-primary btn-block mb-4">Post</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
