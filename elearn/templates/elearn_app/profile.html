@@ -20,7 +20,7 @@ Elearn - User profile
                                     alt="Avatar" class="img-fluid my-5" style="width: 120px; border-radius: 50px;" />
                                     <h5>{{ user.username }}</h5>
                                     <p>{{ profile.user_type|capfirst }}</p>
-                                    <a href="#" class="btn btn-primary">Edit Profile</a>
+                                    <a href="{% url 'edit-profile' user.id %}" class="btn btn-primary">Edit Profile Picture</a>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body p-4">
@@ -81,7 +81,7 @@ Elearn - User profile
                                     alt="Avatar" class="img-fluid my-5" style="width: 120px; border-radius: 50px;" />
                                     <h5>{{ user.username }}</h5>
                                     <p>{{ profile.user_type|capfirst }}</p>
-                                    <a href="#" class="btn btn-primary">Edit Profile</a>
+                                    <a href="{% url 'edit-profile' user.id %}" class="btn btn-primary">Edit Profile Picture</a>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body p-4">

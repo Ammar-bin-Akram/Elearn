@@ -34,17 +34,35 @@ Elearn - Student Courses
     {% else %}
         {% if courses %}
             <div class="container p-3">
+                <h2>Completed Courses</h2>
                 {% for course in courses %}
-                    <div>
-                        <h3>{{ course.name }}</h3>
-                        <p>Course Description: {{ course.course.description }}</p>
-                        <p>Author: {{ course.teacher.user.username }}</p>
-                        {% if course.completed %}
-                            <p>Status: Complete</p>
-                        {% else %}
-                            <p>Status: InProgress</p>
-                        {% endif %}
-                    </div>
+                    {% if course.completed == True %}
+                        <div>
+                            <h3>{{ course.name }}</h3>
+                            <p>Course Description: {{ course.course.description }}</p>
+                            <p>Author: {{ course.teacher.user.username }}</p>
+                            {% if course.completed %}
+                                <p>Status: Complete</p>
+                            {% else %}
+                                <p>Status: InProgress</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <h2>Ongoing Courses</h2>
+                {% for course in courses %}
+                    {% if course.completed != True %}
+                        <div>
+                            <h3>{{ course.name }}</h3>
+                            <p>Course Description: {{ course.course.description }}</p>
+                            <p>Author: {{ course.teacher.user.username }}</p>
+                            {% if course.completed %}
+                                <p>Status: Complete</p>
+                            {% else %}
+                                <p>Status: InProgress</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         {% else %}

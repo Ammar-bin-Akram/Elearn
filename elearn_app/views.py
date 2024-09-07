@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .forms import SignUpForm, LoginForm, AddCourseForm, AddCourseMaterialForm
+from .forms import ChangeProfilePictureForm, SignUpForm, LoginForm, AddCourseForm, AddCourseMaterialForm
 from django.contrib.auth.models import User
 from .models import Profile, Course, CourseMaterial, Enroll, CourseCompletionProgress, Rating
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -9,7 +9,6 @@ from datetime import datetime, timezone
 from django.utils import timezone
 import string
 import random
-from django.db import models
 
 # Create your views here.
 
@@ -268,7 +267,7 @@ def user_profile(request, user_id):
                 elif enroll.course_id in enrollment_count: # type: ignore
                     enrollment_count[enroll.course_id] += 1 # type: ignore
             # getting the course that has highest number of enrollments
-            most_enrolled_course_id = max(enrollment_count, key=enrollment_count.get)
+            most_enrolled_course_id = max(enrollment_count, key=enrollment_count.get) #type: ignore
             # extracting the most enrolled course from database
             most_enrolled_course = Course.objects.get(pk=most_enrolled_course_id)
             context = {'user': user, 'profile': profile, 'courses': courses, 'most_enrolled_course': most_enrolled_course, 'students': enrolls}
@@ -339,6 +338,26 @@ def complete_material(request, user_id, course_material_id, course_id):
     messages.success(request, f'You have completed the lesson {course_material.name}')
     return redirect('learn', user_id=user.pk, course_id=course.pk, course_material_id=course_material.pk)
 
+def edit_profile(request, user_id):
+    user = User.objects.get(pk=user_id)
+    profile = Profile.objects.get(user=user)
+    if request.method == 'POST':
+        form = ChangeProfilePictureForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+            file = data.get('user_image')
+            file.name = custom_filename(file.name) #type: ignore
+            profile.user_image = file # type: ignore
+            profile.save()
+            print(profile.user_image)
+            messages.success(request, 'You profile picture has been updated!')
+            return redirect('profile', user_id=user.pk)
+        else:
+            return HttpResponse('Form is not valid')
+    else:
+        form = ChangeProfilePictureForm()
+        context = {'form': form, 'user': user, 'profile': profile}
+        return render(request, 'elearn_app/edit_profile_image.html', context)
 
 # function to give the user uploaded images and files a custom name as filename_randomStringSequence.extension
 def custom_filename(filename):
@@ -346,3 +365,4 @@ def custom_filename(filename):
     string_sequence = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 15)) 
     new_filename = f'{filename.split('.')[0]}_{string_sequence}.{extension}'
     return new_filename
+

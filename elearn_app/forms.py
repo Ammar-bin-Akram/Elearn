@@ -35,3 +35,5 @@ class AddCourseMaterialForm(forms.Form):
     description = forms.CharField(widget=forms.Textarea)
     file = forms.FileField(required=True)
 
+class ChangeProfilePictureForm(forms.Form):
+    user_image = forms.ImageField(required=True)

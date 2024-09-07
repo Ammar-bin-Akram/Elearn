@@ -1,0 +1,20 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block title %}
+Elearn - Edit Profile
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-column justify-content-top align-items-center mt-3"></div>
+    <h1 class="text-center mb-2">Add New Picture</h1>
+    <div class="d-flex flex-row flex-wrap justify-content-center align-items-center p-5">
+        <form action="#" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+            {{ form.as_p }}
+            <!-- Submit button -->
+            <button data-mdb-ripple-init type="submit" class="btn btn-primary btn-block">Save</button>
+          </form>
+    </div>
+</div>
+{% endblock %}
